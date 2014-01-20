@@ -14,38 +14,19 @@ def output_json(data, code, headers=None):
     resp = make_response(data, code)
     resp.headers.extend(headers or {})
     return resp
-    
-@api.representation('application/rdf+xml')
-def output_rdf_xml(data, code, headers=None):
-    # e necessario implementar a funcao para converter para rdf+xml
-    resp = make_response(data, code)
-    resp.headers.extend(headers or {})
-    return resp
-    
-#@api.representation('text/html')
-#def output_html(data, code, headers=None):
-#    # e necessario implementar a funcao para converter para rdf+xml
-#    #data = "<html><body><h1>FUNCIONA</h1></body></html>"
-#    resp = make_response(data, code)
-#    resp.headers.extend(headers or {})
-#    return resp
-
 
 # Instanciando a maquina de Busca
 search = SearchRepository()
 
-def abort_if_doesnt_exist(result, uri):
-    if result:
-        return result, 200
-    else:
-        abort(404, message="Resource doesn't exist".format(uri))
+#def abort_if_doesnt_exist(result, uri):
+#    if result:
+#        return result, 200
+#    else:
+#        abort(404, message="Resource doesn't exist".format(uri))
 
 parser = reqparse.RequestParser()
 parser.add_argument('uri', type=str)
 parser.add_argument('title', type=str)
-
-
-#https://github.com/RDFLib/rdflib-web/blob/master/rdflib_web/generic_endpoint.py
 
 class Add(Resource):
     def post(self):        
@@ -55,36 +36,21 @@ class Add(Resource):
         obj.title = title
         return obj.resUri, 201
         
-#curl http://localhost:5000/add \
-#  --data-urlencode "title=Tessssteee 2222" \
-#  --data "uri=testeee"
-        
-#    def get(self):
-#        args = parser.parse_args()
-#        uri = args['uri']
-#        title = args['title']
-#        obj = LO(repository_lo[str(uri)])
-#        obj.title = title
-#        return obj.resUri
-
-
-class View(Resource):
-    def get(self, uri):
-        result = search.uri(uri)
-        return abort_if_doesnt_exist(result, uri)
-
+class Control(Resource):
 #    Apagar Objeto [NECESSARIO IMPLEMENTAR]
-#    def delete(self, uri):
+    def delete(self):
+        args = parser.parse_args()
+        uri = args['uri']
 #        #abort_if_todo_doesnt_exist(uri)
 #        #del [uri]
-#        return 'Funcionou', 204
+        return 'Funcionou'
 
 #    Atualizar Objeto [NECESSARIO IMPLEMENTAR]
-#    def put(self, uri):
-#        args = parser.parse_args()
+    def put(self):
+        args = parser.parse_args()
 #        title = {'title': args['title']}
 #        #TODOS[uri] = title
-#        return 'Funcionou', 201
+        return 'Funcionou'
 
 class Search(Resource):
     def get(self):
@@ -92,10 +58,9 @@ class Search(Resource):
         title = args['title']
         result = search.title(title)
         return result.read(), result.getcode()
-        #return result.read(), result.getcode(), {'Content-Disposition' : 'attachment; filename=query-result.json'}
 
 api.add_resource(Add, '/add')
-api.add_resource(View, '/repository/<string:uri>')
+api.add_resource(Control, '/control')
 api.add_resource(Search, '/search')
 
 
