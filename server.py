@@ -18,11 +18,11 @@ def output_json(data, code, headers=None):
 # Instanciando a maquina de Busca
 search = SearchRepository()
 
-#def abort_if_doesnt_exist(result, uri):
-#    if result:
-#        return result, 200
-#    else:
-#        abort(404, message="Resource doesn't exist".format(uri))
+def abort_if_doesnt_exist(result, uri):
+    if result:
+        return result, 200
+    else:
+        abort(404, message="Resource doesn't exist".format(uri))
 
 parser = reqparse.RequestParser()
 parser.add_argument('uri', type=str)
@@ -37,6 +37,11 @@ class Add(Resource):
         return obj.resUri, 201
         
 class Control(Resource):
+    def get(self):
+        args = parser.parse_args()
+        uri = args['uri']
+        result = search.uri(uri)
+        return abort_if_doesnt_exist(result, uri)
 #    Apagar Objeto [NECESSARIO IMPLEMENTAR]
     def delete(self):
         args = parser.parse_args()

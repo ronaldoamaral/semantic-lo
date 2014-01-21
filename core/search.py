@@ -14,12 +14,13 @@ class SearchRepository():
 
     def uri(self, uri):
         """ """
-        query = sesame_server_repository + '?query=describe%s' % str(repository_lo[uri].n3())
+        query = sesame_server_repository + '?query=describe<%s>' % (uri)
         buf = cStringIO.StringIO()
         c = pycurl.Curl()
         c.setopt(c.URL, query)
         c.setopt(c.WRITEFUNCTION, buf.write)
         c.setopt(c.HTTPHEADER, ['Accept: application/rdf+xml', 'Accept-Charset: UTF-8'])
+        #c.setopt(c.HTTPHEADER, ['application/sparql-results+json', 'Accept-Charset: UTF-8'])
         c.perform()
         return buf.getvalue()
 

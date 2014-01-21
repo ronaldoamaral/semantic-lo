@@ -1,3 +1,6 @@
+import unicodedata
+import re
+
 from rdflib import Namespace, BNode, URIRef, RDF
 
 from rdfalchemy import rdfSubject
@@ -18,8 +21,10 @@ foaf = Namespace('http://xmlns.com/foaf/0.1/')
 sesame_server_repository = 'http://localhost:8080/openrdf-sesame/repositories/semanticlo'
 
 rdfSubject.db = SesameGraph(sesame_server_repository)
-
+    
 def convert_to_uri(title=''):
-    uri = title
-    return str(uri)
+    unicode_title = unicode(title)
+    r = unicodedata.normalize('NFKD',unicode_title).encode('ascii','ignore')
+    r = unicode(re.sub('[^\w\s-]','',unicode_title).strip().lower())
+    return re.sub('[-\s]+','-',r)
 

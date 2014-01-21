@@ -33,11 +33,15 @@ Utilização
 Inserido
 
 curl -X POST http://localhost:5000/add --data "title=SemanticLO"
+
+Acessando informações
+
+curl -X GET http://localhost:5000/control --data 'uri=http://localhost:8080/semanticlo/resource/SemanticLO'
  
 
 Apagando
 
-curl -X DELETE http://localhost:5000/control --data 'uri=<http://localhost:8080/resource/Moodle>'
+curl -X DELETE http://localhost:5000/control --data 'uri=http://localhost:8080/semanticlo/resource/SemanticLO'
 
 
 Buscando 
