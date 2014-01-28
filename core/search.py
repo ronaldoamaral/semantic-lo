@@ -26,7 +26,7 @@ class SearchRepository():
 
     def title(self, title):
         """ """
-        query_string = 'PREFIX dcterms: <http://purl.org/dc/terms/> SELECT * WHERE { ?subject dcterms:title ?title FILTER regex(?title, "%s")}' % (title)
+        query_string = 'PREFIX dcterms: <http://purl.org/dc/terms/> SELECT * WHERE { ?subject dcterms:title ?title ; dcterms:identifier ?identifier . FILTER regex(?title, "%s")}' % (title)
         result = self.db.query(query_string,  resultMethod="json", rawResults=True)
         return result
 

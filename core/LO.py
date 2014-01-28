@@ -8,5 +8,6 @@ class LO(rdfSubject):
   rdf_type = lom.LearningObject
   #learning_resource_type = rdfMultiple(lom.)
   title = rdfSingle(dcterms.title)
+  identifier = rdfSingle(dcterms.identifier)
 
 mapper(LO)

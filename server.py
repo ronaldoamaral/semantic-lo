@@ -27,13 +27,16 @@ def abort_if_doesnt_exist(result, uri):
 parser = reqparse.RequestParser()
 parser.add_argument('uri', type=str)
 parser.add_argument('title', type=str)
+parser.add_argument('identifier', type=str)
 
 class Add(Resource):
     def post(self):        
         args = parser.parse_args()
         title = args['title']
+        identifier = args['identifier']
         obj = LO(repository_lo[convert_to_uri(title)])
         obj.title = title
+        obj.identifier = identifier
         return obj.resUri, 201
         
 class Control(Resource):
