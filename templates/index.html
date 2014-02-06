@@ -1,0 +1,457 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Adição de Metadados - SemanticLO Service</title>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script> 
+
+<script src="http://localhost/sandbox/dbpedia-spotlight/dbpedia-spotlight-0.3.js" type="text/javascript"></script>
+
+<script src="http://localhost/sandbox/dbpedia-spotlight/js/tokenizer.js" type="text/javascript"></script>
+     
+<script src="http://localhost/sandbox/dbpedia-spotlight/jquery.getUrlParam.js" type="text/javascript"></script>
+
+<script src="http://localhost/sandbox/dbpedia-spotlight/jquery.uniform/jquery.uniform.min.js"></script>
+
+<script src="http://localhost/sandbox/dbpedia-spotlight/autoresize.jquery.min.js" type="text/javascript" charset="utf-8"></script>
+
+<link rel="stylesheet" href="http://localhost/sandbox/dbpedia-spotlight/jquery.uniform/css/uniform.default.css" type="text/css" media="screen" charset="utf-8" />
+	
+<link rel="stylesheet" type="text/css" href="http://localhost/sandbox/dbpedia-spotlight/css/input_style.css" />	
+<link rel="stylesheet" type="text/css" href="http://localhost/sandbox/dbpedia-spotlight/css/gh-fork-ribbon.css" />
+	<!--[if IE]>
+		<link rel="stylesheet" href="http://localhost/sandbox/dbpedia-spotlight/css/gh-fork-ribbon.ie.css" />
+	<![endif]-->
+
+<style>
+body {
+    font-size: small;
+    font-family: "Myriad Pro", Verdana, Arial, sans-serif;
+
+}
+#text {
+    border: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    font-family: inherit;
+    overflow: auto;
+    font-size: 14px;
+    outline: none;
+}
+#text_container {
+    font-size: 14px;
+    background: #fff no-repeat bottom right;
+
+}
+#text_container.annotated {
+    background: #f0f0f0 none;
+    cursor:text;
+    overflow: visible;
+}
+#text_container div {
+    height: 100%;
+    padding-left: 1px;
+
+}
+#text_container div a, a, a:visited {
+    color: #135e6c;
+}
+
+#text_container {
+    background: transparent;
+}
+
+#text_container .annotation {
+    padding-left: 0;
+    display: inline;
+}
+#text_container, #action_container, #filter_infobox {
+    width: 700px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    border-color: #ddd #eee #eee #ddd;
+    border-width: 1px 2px 2px 1px;
+}
+.container {
+    margin: 0px 50px;
+    padding: 8px;
+    position: relative;
+    clear: both;
+
+}
+#filter_infobox {
+    background: #fafafa;
+    text-align: center;
+    margin-top: 10px;
+}
+
+#text {
+    background: transparent;
+}
+
+#action_container {
+    border: none;
+    clear: left;
+    float: left;
+
+    position: relative;
+}
+#instructions {
+    font-size: 80%;
+    color: #666;
+    text-align: left;
+}
+
+
+#action_options {
+    float: left;
+}
+#action_buttons {
+    height: auto;
+    vertical-align: top;
+    line-height: 100%;
+
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+}
+.highlight { background-color: red; }
+
+.main {
+    width: 800px;
+    margin-top: 2em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.option {
+    width: 308px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 12px;
+}
+
+#content {
+    background-color: #ffa;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+}
+
+div.annotation:hover ul.candidates {
+    visibility: visible;
+
+}
+div.annotation {
+    position: relative;
+    overflow: visible;
+}
+#text_container .annotation {
+    color: #135E6C;
+}
+#text_container .filtered {
+    color: #666;
+    text-decoration: none;
+}
+#text_container a.filtered:hover {
+    text-decoration: underline;
+}
+#text_container div.filtered {
+    color: #666;
+    background: transparent;
+    text-decoration: none;
+}
+#text_container div.filtered a.surfaceForm {
+    color: #666;
+    background-color: #F2F2F2;
+    text-decoration: none;
+}
+
+ul.candidates {
+    font-size: 100%;
+    width: auto;
+    margin: 0;
+    padding: 0.2em 0 0 0;
+    left: 0;
+    top: 1.15em;
+    display: block;
+
+    position: absolute;
+    visibility: hidden;
+    z-index: 10;
+    border: 1px solid #e6e6e6;
+    border-right-width: 2px;
+    border-radius: 3px;
+
+}
+ul.candidates li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-width: 0 0 1px 0;
+    border-style: solid;
+    border-color: #e6e6e6;
+    background: white;
+    white-space: nowrap;
+    padding: 0.15em 0.2em;
+}
+#text_container ul.candidates li a {
+    display: inline-block;
+}
+#text_container div a.surfaceForm {
+    display: inline-block;
+    padding: 0 3px;
+    border-radius: 3px;
+    padding-right: 12px;
+    border: 1px solid #f0f0f0;
+    background: white 95% 50% no-repeat url(data:image/gif;base64,R0lGODlhBQADAIABAHulrf///yH5BAEAAAEALAAAAAAFAAMAAAIFhB0XC1sAOw==);
+    cursor:default;
+}
+#text_container div div.annotation:hover a.surfaceForm {
+    border-color: #c0c0c0;
+    background-image: url(data:image/gif;base64,R0lGODlhBQADAIABAEJ+if///yH5BAEAAAEALAAAAAAFAAMAAAIFhB0XC1sAOw==);
+}
+
+ul.candidates li.candidate-0 {
+    padding: 0.15em 0.85em 0.15em 0.2em;
+
+}
+
+#edit_text_wrapper {
+    text-align: right;
+    width: 100%;
+    clear: both;
+    padding-top: 2em;
+}
+
+#edit_text {
+    display: none;
+}
+
+
+#text_annotated {
+
+    whitespace: pre-line;
+}
+
+#status_indicator {
+    width: 20px;
+    height: 20px;
+    
+    display: inline-block;
+    background: none transparent;
+}
+#status_indicator.loading {
+    background-image: url(data:image/gif;base64,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);
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+}
+.hidden {
+    display: none;
+}
+#flag {
+    width: 133px;
+    height: 70px;
+}
+</style>
+
+<script>
+var annotated = false;
+var textInput = null;
+
+//Default value:
+var server = 'http://spotlight.sztaki.hu:2228/rest'
+var res_prefix = 'http://pt.dbpedia.org/resource/'
+
+var lastResponse;
+
+function send() {
+      var list_annotation = new Array();    
+      $('a.annotation').each(function(i) {
+          list_annotation.push({ 'label': $(this).data('label'), 'uri': $(this).data('uri') });
+      });               
+      
+      var dados = {
+            uri: $("#uri").data('uri'),
+            description: $('#text').val(),
+            annotations: list_annotation
+        }
+
+        $.ajax({
+            url: '/control',
+            type: 'post',
+            dataType: 'json',
+            contentType : 'application/json',
+            data: JSON.stringify(dados),
+            success: function (data) {
+                $('#target').html(data.msg);
+                alert('Funciona');
+                console.log('ok');
+            },
+            
+        });
+      
+   }
+
+function run() {
+
+    $('#edit_text_wrapper').show();
+    var settings = {
+        'endpoint' : server,
+        'confidence' : $('#confidence').val(),
+        'support' : $('#support').val(),
+        'powered_by': 'no',
+        'showScores': 'yes',
+        'spotter' : "Default",
+        'disambiguator' : $('#disambiguator').val(),
+        'callback' : function callback(response) {lastResponse = response; $('#status_indicator').removeClass("loading");}
+    }
+    
+
+// will hide text object and show annotated text
+    $('#text').hide();
+    $('#text_annotated').remove();
+    $('#text_container').prepend('<div id=text_annotated>'+$('#text').val().replace(/\n/g, "<br />\n")+'</div>');
+    $('#text_annotated').annotate(settings);//TODO enable annotate(method, settings)
+    
+    // method = candidates ou best
+    $('#text_annotated').annotate('candidates');
+
+    $('#status_indicator').addClass("loading");
+    $('#text_container').addClass("annotated loading");
+
+    $(".action_button").attr("disabled", true);
+    $.uniform.update(".action_button");
+
+//button to get the editable text box back for the user to modify as needed
+
+    $('#edit_text').click(function() {
+        annotated = false;
+
+        $('#text_annotated').cancelAnnotation();
+
+        $('#text').show();
+        $('#text_annotated').remove();
+        $('#text_container').removeClass("annotated loading");
+        $('#status_indicator').removeClass("loading");
+
+        //$("#text_container").unbind('click');
+        $(".action_button").attr("disabled", false);
+        $('#edit_text_wrapper').hide();
+        $.uniform.update(".action_button");
+    });
+
+    annotated = true;
+
+}
+
+
+
+// Override the onload event
+$(document).ready(function() {
+
+    $('#edit_text_wrapper').hide();
+
+    //accept parameters from URL
+    var t = $(document).getUrlParam('text');
+    var execute = ($(document).getUrlParam('execute') == "yes");
+
+    if ($.trim(t)!='' && t != "null") { $('#text').val(decodeURIComponent(t)); }
+
+    $('textarea#text').autoResize({
+        // On resize:
+        onResize : function() {
+            $(this).css({opacity:0.8});
+        },
+        // After resize:
+        animateCallback : function() {
+            $(this).css({opacity:1});
+        },
+        // Quite slow animation:
+        animateDuration : 150,
+        // More extra space:
+        extraSpace : 15
+    });
+
+
+    $('#annotate').click(function() {
+        run();
+    });
+
+    $(".candidates").uniform()
+    $("select, input").uniform();
+    $("select, input").attr("disabled", false);
+    $(".disabled").removeClass("disabled");
+    $(".action_button").attr("disabled", false);
+    
+		
+});
+
+</script>
+
+</head>
+
+<body>
+<div class="main">
+    {% if uri %}
+   <h3>Adição de Metadados para: {{uri}}</h3>
+   
+   <span id='target'></span>   
+      
+   <input type='hidden' value={{uri}} name='uri' id='uri' data-uri={{uri}}>
+   
+   <div>
+   <h3>Palavras-chave:</h3>
+   <input id="targetInput" type="text">
+   </div>
+   
+	<script type="text/javascript">
+		window.tokenInput = $('#targetInput').tokenizer({
+			onclick: function (token) { window.open(token.data('uri')); }, 
+                        source:  function(word, suggest, request, callback) {
+                            $.ajax({
+                            url: "http://lookup.dbpedia.org/api/search/PrefixSearch",
+                            data: { MaxHits: 10, QueryString: word },
+                            dataType: "json",
+                            success: function (response) {
+                                var label_list = response.results.map(function (m) { return m.label; });
+                                var uri_list = response.results.map(function (m) { return m.uri; });
+                                suggest(label_list, uri_list);
+                              }
+                            });
+                       }
+		});
+	</script>
+    
+    <h3>Descrição: </h3>
+    <div id="text_container" class="container">
+        <textarea rows="10" id="text"></textarea>
+        <div id="edit_text_wrapper">
+            <input id="edit_text" type="button" value="Editar Texto"/>
+             
+        </div>
+    </div>
+    <br><br>
+    <div id="action_container" class="container">
+        <div id="action_buttons">
+            <div id="status_indicator">&nbsp;</div>
+            <input class="action_button" id="annotate" type="button" enabled value="Criar Anotação"/>
+            <input onclick='send()' id="enviar" type="button" value="Enviar">
+        </div>
+    </div>    
+    
+    {% else %}
+    <h3>ERRO: URI não Informada</h3>
+        
+    {% endif %}
+</div>
+    
+
+</body>
+</html>
+
