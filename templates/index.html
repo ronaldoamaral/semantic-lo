@@ -71,7 +71,7 @@ body {
     display: inline;
 }
 #text_container, #action_container, #filter_infobox {
-    width: 700px;
+    width: 500px;
     border-radius: 5px;
     border: 1px solid #ccc;
     border-color: #ddd #eee #eee #ddd;
@@ -123,7 +123,7 @@ body {
 .highlight { background-color: red; }
 
 .main {
-    width: 800px;
+    width: 600px;
     margin-top: 2em;
     margin-left: auto;
     margin-right: auto;
@@ -288,13 +288,16 @@ function send() {
             dataType: 'json',
             contentType : 'application/json',
             data: JSON.stringify(dados),
-            success: function (data) {
-                $('#target').html(data.msg);
-                alert('Funciona');
-                console.log('ok');
+            success: function (response) {
+                var callback = $("#callback").data('callback');                            
+                window.location.href = callback;
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                alert('Error: ' + textStatus);
             },
             
-        });
+        });      
+
       
    }
 
@@ -399,14 +402,15 @@ $(document).ready(function() {
 <body>
 <div class="main">
     {% if uri %}
-   <h3>Adição de Metadados para: {{uri}}</h3>
+   <p><b>Adição de Metadados para: {{uri}}</b></p>
    
    <span id='target'></span>   
       
    <input type='hidden' value={{uri}} name='uri' id='uri' data-uri={{uri}}>
+   <input type='hidden' value={{callback}} name='callback' id='callback' data-callback={{callback}}>
    
    <div>
-   <h3>Palavras-chave:</h3>
+   <b>Palavras-chave: </b>
    <input id="targetInput" type="text">
    </div>
    
@@ -428,7 +432,7 @@ $(document).ready(function() {
 		});
 	</script>
     
-    <h3>Descrição: </h3>
+    <p><b>Descrição: </b></p>
     <div id="text_container" class="container">
         <textarea rows="10" id="text"></textarea>
         <div id="edit_text_wrapper">

@@ -4,6 +4,7 @@ from flask import Flask
 from flask.ext.restful import reqparse, abort, Api, Resource, request
 from flask import make_response
 from flask import render_template
+from flask import redirect, url_for
 
 from core.LO import *
 from core.search import SearchRepository
@@ -37,6 +38,7 @@ parser = reqparse.RequestParser()
 parser.add_argument('uri', type=str)
 parser.add_argument('title', type=str)
 parser.add_argument('identifier', type=str)
+parser.add_argument('callback', type=str)
 
 
 class Add(Resource):
@@ -47,7 +49,7 @@ class Add(Resource):
         obj = LO(repository_lo[convert_to_uri(title)])
         obj.title = title
         obj.identifier = identifier
-        return obj.resUri, 201
+        return '{"status": "success", "data": {"uri": "' + obj.resUri +'" }, "message": "null" }', 201
         
 class Control(Resource):
     def get(self):
@@ -55,6 +57,7 @@ class Control(Resource):
         uri = args['uri']
         result = search.uri(uri)
         return abort_if_doesnt_exist(result, uri)
+        
 #    Apagar Objeto [NECESSARIO IMPLEMENTAR]
     def delete(self):
         args = parser.parse_args()
@@ -63,12 +66,13 @@ class Control(Resource):
 #        #del [uri]
         return 'Funcionou'
 
-    def post(self):   
+    def post(self): 
         uri = request.json['uri']
-        description = request.json['description']
+        description = request.json['description']        
         obj = LO('<'+uri+'>')
         obj.description =  description
-        return 'Funcionou' + uri, 201
+        # Adicionar os outros metadados.
+        return '{"status": "success", "data": { }, "message": "null" }', 202
 
 class Search(Resource):
     def get(self):
@@ -81,7 +85,8 @@ class AddMetadataView(Resource):
     def get(self):
         args = parser.parse_args()
         uri = args['uri']
-        return render_template('index.html', uri = uri)
+        callback = args['callback']
+        return render_template('index.html', uri = uri, callback = callback)
         
 
 api.add_resource(Add, '/add')
