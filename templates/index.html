@@ -274,12 +274,19 @@ function send() {
       var list_annotation = new Array();    
       $('a.annotation').each(function(i) {
           list_annotation.push({ 'label': $(this).data('label'), 'uri': $(this).data('uri') });
-      });               
+      });    
+      
+      var list_tags = new Array();    
+      $('.tknz-token').each(function(i) {
+          list_tags.push({ 'label': $(this).data('token'), 'uri': $(this).data('uri') });
+      });    
+           
       
       var dados = {
             uri: $("#uri").data('uri'),
             description: $('#text').val(),
-            annotations: list_annotation
+            annotations: list_annotation,
+            tags: list_tags
         }
 
         $.ajax({

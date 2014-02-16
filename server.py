@@ -68,7 +68,10 @@ class Control(Resource):
 
     def post(self): 
         uri = request.json['uri']
-        description = request.json['description']        
+        description = request.json['description']  
+        annotations = request.json['annotations']  
+        tags = request.json['tags']  
+              
         obj = LO('<'+uri+'>')
         obj.description =  description
         # Adicionar os outros metadados.
