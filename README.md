@@ -54,3 +54,34 @@ Acessando Informações a partir do Pubby
 
 curl --header "Accept: application/rdf+xml" http://localhost:8080/semanticlo/data/SemanticLO
 
+
+
+Corrigindo Erro de Codificação na Biblioteca RDFAlchemy
+
+É necessário acrescentar no arquivo /rdfalchemy/sparql/sesame2.py
+
+# -*- coding: utf-8 -*-
+
+E no métido descrito abaixo é necessário codificar a string "data_str" para UTF-8 
+
+def add(self, (s, p, o), context=None):
+        """Add a triple with optional context"""
+        url = self.url+'/statements'
+        ctx = context or self.context
+        if ctx:
+            url = url+"?"+urlencode(dict(context=ctx))
+        req = Request(url)
+        data_str = "%s %s %s .\n" % (s.n3(), p.n3(), o.n3())
+        ######## PATCH ############  
+        req.data = data_str.encode('utf8')
+        req.add_header('Content-Type','text/rdf+n3')
+        ##########################
+        try:
+            result = urlopen(req).read()
+        except HTTPError, e:
+            if e.code == 204:
+                return
+            else:
+                log.error(e)
+        return result
+

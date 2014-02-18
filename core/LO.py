@@ -1,3 +1,5 @@
+ # -*- coding: utf-8 -*-
+
 from utils import *
 from rdfalchemy.descriptors import *
 from rdfalchemy.orm import mapper

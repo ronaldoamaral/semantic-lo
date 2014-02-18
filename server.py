@@ -1,3 +1,4 @@
+ # -*- coding: utf-8 -*-
 import simplejson as json
 
 from flask import Flask
@@ -71,7 +72,7 @@ class Control(Resource):
         description = request.json['description']  
         annotations = request.json['annotations']  
         tags = request.json['tags']  
-              
+        #import pdb;pdb.set_trace()      
         obj = LO('<'+uri+'>')
         obj.description =  description
         # Adicionar os outros metadados.
