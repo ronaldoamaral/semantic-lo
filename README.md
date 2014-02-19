@@ -32,7 +32,7 @@ Utilização
  
 Inserido
 
-curl -X POST http://localhost:5000/add --data "title=SemanticLO"
+curl -X POST -H "Content-Type: application/json" --data '{"title":"SemanticLO","identifier":"http://example.com"}' http://localhost:5000/add
 
 Acessando informações
 

@@ -43,10 +43,9 @@ parser.add_argument('callback', type=str)
 
 
 class Add(Resource):
-    def post(self):        
-        args = parser.parse_args()
-        title = args['title']
-        identifier = args['identifier']
+    def post(self):       
+        title = request.json['title']  
+        identifier = request.json['identifier']  
         obj = LO(repository_lo[convert_to_uri(title)])
         obj.title = title
         obj.identifier = identifier
@@ -72,7 +71,6 @@ class Control(Resource):
         description = request.json['description']  
         annotations = request.json['annotations']  
         tags = request.json['tags']  
-        #import pdb;pdb.set_trace()      
         obj = LO('<'+uri+'>')
         obj.description =  description
         # Adicionar os outros metadados.
