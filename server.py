@@ -1,4 +1,4 @@
- # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import simplejson as json
 
 from flask import Flask
@@ -9,7 +9,7 @@ from flask import redirect, url_for
 
 from core.LO import *
 from core.search import SearchRepository
-from core.utils import repository_lo, convert_to_uri
+from core.utils import repository_lo, convert_to_uri, URIRef
 
 app = Flask(__name__)
 api = Api(app)
@@ -73,11 +73,21 @@ class Control(Resource):
         tags = request.json['tags']  
         obj = LO('<'+uri+'>')
         obj.description =  description
+        if tags:
+            keywords = []
+            for value in tags:
+                if value.get('uri') != 'undefined':
+                    keywords.append(URIRef(value.get('uri')))
+                else:
+                    keywords.append(value.get('label'))
+        #keywords = [URIRef(x.get('uri')) for x in tags] # Armazenando URI como Palavra-chaves
+        obj.subject = keywords  
         # Adicionar os outros metadados.
         return '{"status": "success", "data": { }, "message": "null" }', 202
 
 class Search(Resource):
     def get(self):
+        import pdb; pdb.set_trace()
         args = parser.parse_args()
         title = args['title']
         result = search.title(title)

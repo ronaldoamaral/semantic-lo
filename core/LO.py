@@ -12,5 +12,6 @@ class LO(rdfSubject):
   title = rdfSingle(dcterms.title)
   identifier = rdfSingle(dcterms.identifier)
   description = rdfSingle(dcterms.description)
+  subject = rdfMultiple(dcterms.subject)
 
 mapper(LO)
